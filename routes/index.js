@@ -6,6 +6,7 @@ router.use("*", (req, res, next) => {
 	next();
 });
 router.use("/question", require("./question"));
+router.use("/answer", require("./answer"));
 
 router.use("*", (req, res) => {
 	return res.status(404).json({

@@ -49,6 +49,7 @@ const controllers = {
 			if (!question) {
 				return errorResponse(
 					res,
+					{},
 					"Question you are looking for doesn't exits!"
 				);
 			}
@@ -87,7 +88,7 @@ const controllers = {
 			const question = await updateQuestion(questionId, questionData);
 
 			if (!question) {
-				return errorResponse(res, "couldn't update question");
+				return errorResponse(res, {}, "couldn't update question");
 			}
 
 			return successResponse(res, question, "question updated successfully!");
@@ -111,7 +112,7 @@ const controllers = {
 			const removedQuestion = await deleteQuestion(questionId);
 
 			if (!deleteQuestion) {
-				return errorResponse(res, "something went wrong, pleas try again!");
+				return errorResponse(res, {}, "something went wrong, pleas try again!");
 			}
 
 			return successResponse(

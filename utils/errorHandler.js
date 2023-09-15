@@ -26,7 +26,7 @@ module.exports = {
 			data: err,
 		});
 	},
-	invalidFieldResponse: (res, err, message = "Field cannot be empty") => {
+	invalidFieldResponse: (res, err, message = "field cannot be empty") => {
 		console.error(err);
 		return res.status(400).json({
 			success: false,
