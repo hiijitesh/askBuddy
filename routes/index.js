@@ -5,7 +5,7 @@ router.use("*", (req, res, next) => {
 	console.log("=>", req.method, req.originalUrl);
 	next();
 });
-// router.use("/user", require("./user"));
+router.use("/question", require("./question"));
 
 router.use("*", (req, res) => {
 	return res.status(404).json({

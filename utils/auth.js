@@ -34,7 +34,7 @@ module.exports = {
 				{ phone: user.phone, id: user.id },
 				process.env.ACCESS_TOKEN,
 				{
-					expiresIn: "30m",
+					expiresIn: "3600m",
 				}
 			);
 		} else {
