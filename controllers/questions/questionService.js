@@ -12,9 +12,7 @@ module.exports = {
 
 	getQuestionById: async (questionId) => {
 		try {
-			return await QuestionModel.findOne(
-				new mongoose.Types.ObjectId(questionId)
-			);
+			return await QuestionModel.findOne(questionId);
 		} catch (error) {
 			console.error(error.message);
 		}
