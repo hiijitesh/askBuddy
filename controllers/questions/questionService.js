@@ -10,6 +10,16 @@ module.exports = {
 		}
 	},
 
+	getQuestionById: async (questionId) => {
+		try {
+			return await QuestionModel.findOne(
+				new mongoose.Types.ObjectId(questionId)
+			);
+		} catch (error) {
+			console.error(error.message);
+		}
+	},
+
 	updateQuestion: async (questionId, updatedQuestion) => {
 		try {
 			return await QuestionModel.findOneAndUpdate(
@@ -26,7 +36,10 @@ module.exports = {
 
 	deleteQuestion: async (questionId) => {
 		try {
-			return await QuestionModel.findOneAndDelete(questionId, { new: true });
+			return await QuestionModel.findOneAndDelete(
+				new mongoose.Types.ObjectId(questionId),
+				{ new: true }
+			);
 		} catch (error) {
 			console.error(error.message);
 		}
