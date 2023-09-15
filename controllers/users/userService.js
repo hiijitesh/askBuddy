@@ -8,7 +8,6 @@ module.exports = {
 			console.error(error.message);
 		}
 	},
-	// signInUser: async (username, password) => {},
 	getUserById: async (user) => {
 		try {
 			return await UserModel.findOne(user);

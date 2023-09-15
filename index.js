@@ -5,14 +5,17 @@ const dbConnection = require("./database/config");
 const PORT = 4500;
 dbConnection();
 
-const router = require("./routes");
+const userRouter = require("./routes/user");
+const route = require("./routes");
+const { isAuthenticated } = require("./utils/auth");
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(router);
+app.use("/user", userRouter);
+app.use(isAuthenticated, route);
 
 app.listen(PORT, () => {
-	console.log(`Server is lisetning on the port ${PORT} ✅✅✅`);
+	console.log(`Server is listening on the port ${PORT} ✅✅✅`);
 });

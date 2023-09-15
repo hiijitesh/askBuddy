@@ -4,7 +4,9 @@ const {
 	successResponse,
 } = require("../../utils/errorHandler");
 const { validateEmail, validatePassword } = require("../../utils/validator");
+const { generateToken } = require("../../utils/auth");
 const { registerUser, getUserById } = require("./userService");
+const bcrypt = require("bcrypt");
 
 const userController = {
 	signUp: async (req, res) => {
@@ -22,7 +24,8 @@ const userController = {
 			}
 
 			// TODO add Encryption
-			const userData = { name, email, username };
+			const hashedPassword = await bcrypt.hash(password, 10);
+			const userData = { name, email, username, password: hashedPassword };
 
 			const existingUser = await getUserById({ username, email });
 			if (existingUser) {
@@ -34,7 +37,6 @@ const userController = {
 			}
 
 			const userRegistrationData = await registerUser(userData);
-
 			if (!userRegistrationData) {
 				return errorResponse(
 					res,
@@ -47,6 +49,32 @@ const userController = {
 				userRegistrationData,
 				"user created successfully"
 			);
+		} catch (error) {
+			console.error(error);
+		}
+	},
+
+	login: async (req, res) => {
+		try {
+			const { username, password } = req.body;
+
+			if (!username || !password) {
+				return invalidFieldResponse(res, "username and password are mandatory");
+			}
+
+			const user = await getUserById({ username });
+			if (!user) {
+				return errorResponse(res, username, "No user founds");
+			}
+
+			const matchPassword = await bcrypt.compare(password, user.password);
+			if (!matchPassword) {
+				return errorResponse(res, "wrong password");
+			}
+			const access_token = generateToken(user, "access");
+			// const refresh_token = generateJWTToken(user, "refresh");
+
+			return successResponse(res, { access_token }, "User Login successfully");
 		} catch (error) {
 			console.error(error);
 		}
