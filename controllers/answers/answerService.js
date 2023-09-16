@@ -11,7 +11,7 @@ module.exports = {
 
 	getAnswerById: async (ansId) => {
 		try {
-			return await AnsModel.findOne({ _id: ansId });
+			return await AnsModel.findOne(ansId);
 		} catch (error) {
 			console.error(error.message);
 		}

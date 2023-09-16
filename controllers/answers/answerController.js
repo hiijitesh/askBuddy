@@ -103,7 +103,7 @@ const controllers = {
 				return invalidFieldResponse(res, "please provide answer description");
 			}
 
-			const answer = await getAnswerById(ansId);
+			const answer = await getAnswerById({ _id: ansId });
 			if (answer.answeredBy.toString() !== userId.toString()) {
 				return forbiddenResponse(
 					res,
