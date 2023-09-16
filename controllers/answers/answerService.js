@@ -17,9 +17,9 @@ module.exports = {
 		}
 	},
 
-	getTotalAnswer: async (questionFilter) => {
+	getTotalAnswer: async (filter) => {
 		try {
-			return await AnsModel.find(questionFilter).lean().exec();
+			return await AnsModel.find(filter).lean().exec();
 		} catch (error) {
 			console.error(error.message);
 		}
