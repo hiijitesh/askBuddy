@@ -71,6 +71,7 @@ const userController = {
 			if (!matchPassword) {
 				return errorResponse(res, "wrong password");
 			}
+
 			const access_token = generateToken(user, "access");
 			// const refresh_token = generateJWTToken(user, "refresh");
 

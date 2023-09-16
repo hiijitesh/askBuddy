@@ -11,8 +11,7 @@ module.exports = {
 
 	updateVote: async (id, updateObject) => {
 		try {
-			return await VoteModel.findOneAndReplace(id, updateObject, {
-				upsert: true,
+			return await VoteModel.findOneAndUpdate(id, updateObject, {
 				new: true,
 			});
 		} catch (error) {

@@ -47,7 +47,6 @@ const controllers = {
 					new mongoose.Types.ObjectId(userId.toString()),
 					voteObject
 				);
-				console.log("+========", vote);
 				return successResponse(
 					res,
 					vote,
@@ -102,7 +101,6 @@ const controllers = {
 					new mongoose.Types.ObjectId(userId.toString()),
 					voteObject
 				);
-				// console.log(vote);
 				return successResponse(
 					res,
 					vote,
@@ -142,25 +140,21 @@ const controllers = {
 				ansId,
 				isUpvote: true,
 				isDownvote: false,
+				isAnswer: true,
 			};
 
 			const oldVoteObj = {
 				voteUserId: userId,
 				ansId,
-				isUpvote: true,
-				isDownvote: false,
 				isAnswer: true,
 			};
 			const oldVote = await getVoteData(oldVoteObj);
 			if (oldVote) {
-				return errorResponse(
-					res,
-					oldVote,
-					"you have been already upvoted this Answer!"
-				);
+				const vote = await updateVote({ _id: oldVote._id }, voteObject);
+				return successResponse(res, vote, "upvote was updated to this Answer!");
 			}
 
-			const upvote = await vote(voteObject);
+			const upvote = await createVote(voteObject);
 			if (!upvote) {
 				return errorResponse(res, answer, "You cannot upvote Answer");
 			}
@@ -192,28 +186,33 @@ const controllers = {
 				ansId,
 				isUpvote: false,
 				isDownvote: true,
+				isAnswer: true,
 			};
 
 			const oldVoteObj = {
 				voteUserId: userId,
 				ansId,
-				isUpvote: true,
-				isDownvote: false,
 				isAnswer: true,
 			};
 			const oldVote = await getVoteData(oldVoteObj);
-			if (!oldVote) {
-				const data = await vote(voteObject);
-				return successResponse(res, data, "downvoted answer");
+			if (oldVote) {
+				const vote = await updateVote({ _id: oldVote._id }, voteObject);
+				return successResponse(
+					res,
+					vote,
+					"downvote was updated to this Answer!"
+				);
 			}
 
-			const downvote = await updateVote(ansId, voteObject);
-			return successResponse(
-				res,
-				downvote,
-				"you have downvoted the ans this Answer!"
-			);
-		} catch (error) {}
+			const downvote = await createVote(voteObject);
+			if (!downvote) {
+				return errorResponse(res, downvote, "couldn't downvote the Answer");
+			}
+
+			return successResponse(res, downvote, "Answer downvoted Successfully!");
+		} catch (error) {
+			console.error(error);
+		}
 	},
 };
 
