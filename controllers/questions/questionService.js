@@ -12,7 +12,7 @@ module.exports = {
 
 	getQuestionById: async (questionId) => {
 		try {
-			return await QuestionModel.findOne(questionId);
+			return await QuestionModel.findOne({ _id: questionId });
 		} catch (error) {
 			console.error(error.message);
 		}

@@ -1,4 +1,3 @@
-const { default: mongoose } = require("mongoose");
 const { AnsModel } = require("../../models");
 
 module.exports = {
@@ -12,8 +11,6 @@ module.exports = {
 
 	getAnswerById: async (ansId) => {
 		try {
-			console.log(ansId);
-
 			return await AnsModel.findOne({ _id: ansId });
 		} catch (error) {
 			console.error(error.message);
