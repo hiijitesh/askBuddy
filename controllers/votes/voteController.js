@@ -3,8 +3,11 @@ const {
 	invalidFieldResponse,
 	successResponse,
 } = require("../../utils/errorHandler");
+
 const { getQuestionById } = require("../questions/questionService");
-const { voteQuestion, getVoteData } = require("./voteService");
+const { getAnswerById, updateAnswer } = require("../answers/answerService");
+
+const { vote, getVoteData, updateVote } = require("./voteService");
 
 const controllers = {
 	questionUpvote: async (req, res) => {
@@ -48,7 +51,7 @@ const controllers = {
 				questionId,
 			};
 
-			const upvote = await voteQuestion(voteObject);
+			const upvote = await vote(voteObject);
 			if (!upvote) {
 				return errorResponse(res, question, "You cannot upvote Question");
 			}
@@ -99,7 +102,7 @@ const controllers = {
 				voteUserId: userId,
 				questionId,
 			};
-			const upvote = await voteQuestion(voteObject);
+			const upvote = await vote(voteObject);
 			if (!upvote) {
 				return errorResponse(res, question, "You cannot downvote Question");
 			}
@@ -107,6 +110,102 @@ const controllers = {
 		} catch (error) {
 			console.error(error.message);
 		}
+	},
+
+	ansUpVote: async (req, res) => {
+		try {
+			const { ansId } = req.body;
+			const userId = req.userInfo.id;
+
+			if (!ansId) {
+				return invalidFieldResponse(res, "provide all fields");
+			}
+
+			const answer = await getAnswerById(ansId);
+			if (!answer) {
+				return errorResponse(res, "answer doesn't exists");
+			}
+
+			if (userId.toString() === answer.answeredBy?.toString()) {
+				return errorResponse(res, answer, "You cannot vote own Answer!");
+			}
+			const voteObject = {
+				voteUserId: userId,
+				ansId,
+				isUpvote: true,
+				isDownvote: false,
+			};
+
+			const oldVoteObj = {
+				voteUserId: userId,
+				ansId,
+				isUpvote: true,
+				isDownvote: false,
+				isAnswer: true,
+			};
+			const oldVote = await getVoteData(oldVoteObj);
+			if (oldVote) {
+				return errorResponse(
+					res,
+					oldVote,
+					"you have been already upvoted this Answer!"
+				);
+			}
+
+			const upvote = await vote(voteObject);
+			if (!upvote) {
+				return errorResponse(res, answer, "You cannot upvote Answer");
+			}
+			return successResponse(res, upvote, "Answer upvoted successfully");
+		} catch (error) {
+			console.error(error.message);
+		}
+	},
+
+	answerDownVote: async (req, res) => {
+		try {
+			const { ansId } = req.body;
+			const userId = req.userInfo.id;
+
+			if (!ansId) {
+				return invalidFieldResponse(res, "provide all fields");
+			}
+
+			const answer = await getAnswerById(ansId);
+			if (!answer) {
+				return errorResponse(res, "answer doesn't exists");
+			}
+
+			if (userId.toString() === answer.answeredBy?.toString()) {
+				return errorResponse(res, answer, "You cannot vote own Answer!");
+			}
+			const voteObject = {
+				voteUserId: userId,
+				ansId,
+				isUpvote: false,
+				isDownvote: true,
+			};
+
+			const oldVoteObj = {
+				voteUserId: userId,
+				ansId,
+				isUpvote: true,
+				isDownvote: false,
+				isAnswer: true,
+			};
+			const oldVote = await getVoteData(oldVoteObj);
+			if (!oldVote) {
+				const data = await vote(voteObject);
+				return successResponse(res, data, "downvoted answer");
+			}
+
+			const downvote = await updateVote(ansId, voteObject);
+			return successResponse(
+				res,
+				downvote,
+				"you have downvoted the ans this Answer!"
+			);
+		} catch (error) {}
 	},
 };
 
