@@ -1,7 +1,7 @@
 const VoteModel = require("../../models/vote");
 
 module.exports = {
-	vote: async (object) => {
+	createVote: async (object) => {
 		try {
 			return await VoteModel.create(object);
 		} catch (error) {
@@ -9,9 +9,12 @@ module.exports = {
 		}
 	},
 
-	updateVote: async (updateObject) => {
+	updateVote: async (id, updateObject) => {
 		try {
-			return await VoteModel.findOneAndReplace(updateObject);
+			return await VoteModel.findOneAndReplace(id, updateObject, {
+				upsert: true,
+				new: true,
+			});
 		} catch (error) {
 			console.error(error.message);
 		}

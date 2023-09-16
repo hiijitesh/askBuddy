@@ -5,9 +5,10 @@ const {
 } = require("../../utils/errorHandler");
 
 const { getQuestionById } = require("../questions/questionService");
-const { getAnswerById, updateAnswer } = require("../answers/answerService");
+const { getAnswerById } = require("../answers/answerService");
 
-const { vote, getVoteData, updateVote } = require("./voteService");
+const { createVote, getVoteData, updateVote } = require("./voteService");
+const { default: mongoose } = require("mongoose");
 
 const controllers = {
 	questionUpvote: async (req, res) => {
@@ -27,22 +28,6 @@ const controllers = {
 			if (userId.toString() === question.askedBy?.toString()) {
 				return errorResponse(res, question, "You cannot vote own Question!");
 			}
-
-			const oldVoteObj = {
-				voteUserId: userId,
-				questionId,
-				isUpvote: true,
-				isQuestion: true,
-			};
-			const oldVote = await getVoteData(oldVoteObj);
-			if (oldVote) {
-				return errorResponse(
-					res,
-					oldVote,
-					"you have already upvoted this Question!"
-				);
-			}
-
 			const voteObject = {
 				isUpvote: true,
 				isDownvote: false,
@@ -51,7 +36,26 @@ const controllers = {
 				questionId,
 			};
 
-			const upvote = await vote(voteObject);
+			const oldVoteObj = {
+				voteUserId: userId,
+				questionId,
+				isQuestion: true,
+			};
+			const oldVote = await getVoteData(oldVoteObj);
+			if (oldVote) {
+				const vote = await updateVote(
+					new mongoose.Types.ObjectId(userId.toString()),
+					voteObject
+				);
+				console.log("+========", vote);
+				return successResponse(
+					res,
+					vote,
+					"upvote was updated to this Question!"
+				);
+			}
+
+			const upvote = await createVote(voteObject);
 			if (!upvote) {
 				return errorResponse(res, question, "You cannot upvote Question");
 			}
@@ -79,30 +83,34 @@ const controllers = {
 			if (userId.toString() === question.askedBy?.toString()) {
 				return errorResponse(res, question, "You cannot vote own Question!");
 			}
+			const voteObject = {
+				isDownvote: true,
+				isUpvote: false,
+				isQuestion: true,
+				voteUserId: userId,
+				questionId,
+			};
 
 			const oldVoteObj = {
 				voteUserId: userId,
 				questionId,
-				isUpvote: false,
-				isDownvote: true,
 				isQuestion: true,
 			};
 			const oldVote = await getVoteData(oldVoteObj);
 			if (oldVote) {
-				return errorResponse(
+				const vote = await updateVote(
+					new mongoose.Types.ObjectId(userId.toString()),
+					voteObject
+				);
+				// console.log(vote);
+				return successResponse(
 					res,
-					oldVote,
-					"you have been already downvoted this Question!"
+					vote,
+					"downvote was updated to this Question!"
 				);
 			}
 
-			const voteObject = {
-				isDownvote: true,
-				isQuestion: true,
-				voteUserId: userId,
-				questionId,
-			};
-			const upvote = await vote(voteObject);
+			const upvote = await createVote(voteObject);
 			if (!upvote) {
 				return errorResponse(res, question, "You cannot downvote Question");
 			}
