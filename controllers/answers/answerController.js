@@ -11,6 +11,7 @@ const {
 	getAnswerById,
 	updateAnswer,
 	deleteAnswer,
+	getTotalAnswer,
 } = require("./answerService");
 
 const controllers = {
@@ -36,6 +37,7 @@ const controllers = {
 
 			const ansData = {
 				description,
+				questionId,
 				answeredBy: userId,
 			};
 			const answer = await answerToQuestion(ansData);
@@ -58,6 +60,29 @@ const controllers = {
 			}
 
 			return successResponse(res, answer, "answer found");
+		} catch (error) {
+			console.error(error.message);
+		}
+	},
+
+	AllAnswer: async (req, res) => {
+		try {
+			const { questionId } = req.body;
+
+			if (!questionId) {
+				return invalidFieldResponse(res, "no question Id found");
+			}
+
+			const filter = {};
+			filter.questionId = new mongoose.Types.ObjectId(questionId);
+			filter.isAccepted = false;
+
+			const totalAnswer = await getTotalAnswer(filter);
+			if (!totalAnswer) {
+				return errorResponse(res, "answer doesn't exits");
+			}
+
+			return successResponse(res, totalAnswer, "ans found");
 		} catch (error) {
 			console.error(error.message);
 		}

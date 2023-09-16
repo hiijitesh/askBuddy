@@ -17,6 +17,15 @@ module.exports = {
 			console.error(error.message);
 		}
 	},
+
+	getTotalAnswer: async (questionFilter) => {
+		try {
+			console.log(questionFilter);
+			return await AnsModel.find(questionFilter).lean().exec();
+		} catch (error) {
+			console.error(error.message);
+		}
+	},
 	updateAnswer: async (ansId, updateData) => {
 		try {
 			return await AnsModel.findOneAndUpdate(ansId, updateData, { new: true });
