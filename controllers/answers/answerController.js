@@ -5,7 +5,10 @@ const {
 	successResponse,
 	forbiddenResponse,
 } = require("../../utils/errorHandler");
-const { getQuestionById } = require("../questions/questionService");
+const {
+	getQuestionById,
+	updateQuestion,
+} = require("../questions/questionService");
 const {
 	answerToQuestion,
 	getAnswerById,
@@ -65,7 +68,7 @@ const controllers = {
 		}
 	},
 
-	AllAnswer: async (req, res) => {
+	allAnswer: async (req, res) => {
 		try {
 			const { questionId } = req.body;
 
@@ -166,6 +169,10 @@ const controllers = {
 				return errorResponse(res, "No such Answer exists!");
 			}
 
+			if (answer.isAccepted) {
+				return errorResponse(res, answer, "Answer is already accepted");
+			}
+
 			const question = await getQuestionById(answer.questionId);
 			if (userId.toString() !== question.askedBy.toString()) {
 				return forbiddenResponse(
@@ -179,6 +186,17 @@ const controllers = {
 				return errorResponse(res, answer, "couldn't mark accepted");
 			}
 
+			const markQuestionAsAnswered = await updateQuestion(question._id, {
+				isAnswered: true,
+			});
+
+			if (!markQuestionAsAnswered) {
+				return errorResponse(
+					res,
+					question,
+					"couldn't mark question as answered"
+				);
+			}
 			return successResponse(res, markAccepted, "answer accepted!");
 		} catch (error) {
 			console.error(error.message);

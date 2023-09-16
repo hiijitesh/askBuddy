@@ -5,7 +5,7 @@ const { answerController } = require("../controllers");
 router.post("/ans", answerController.addAnswer);
 router.put("/edit", answerController.editAnswer);
 router.delete("/remove", answerController.removeAnswer);
-router.get("/all", answerController.AllAnswer);
+router.get("/all", answerController.allAnswer);
 router.post("/accept", answerController.markAnswerAccepted);
 
 router.get("/:id", answerController.getAnswer);
