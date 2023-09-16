@@ -14,7 +14,7 @@ const controllers = {
 	questionUpvote: async (req, res) => {
 		try {
 			const { questionId } = req.body;
-			const userId = req.userInfo.id;
+			const userId = req.user.id;
 
 			if (!questionId) {
 				return invalidFieldResponse(res, "provide question id");
@@ -62,13 +62,14 @@ const controllers = {
 			return successResponse(res, upvote, "Question upvoted successfully");
 		} catch (error) {
 			console.error(error.message);
+			return error;
 		}
 	},
 
 	questionDownVote: async (req, res) => {
 		try {
 			const { questionId } = req.body;
-			const userId = req.userInfo.id;
+			const userId = req.user.id;
 
 			if (!questionId) {
 				return invalidFieldResponse(res, "provide question id");
@@ -115,13 +116,14 @@ const controllers = {
 			return successResponse(res, upvote, "Question downvoted successfully");
 		} catch (error) {
 			console.error(error.message);
+			return error;
 		}
 	},
 
 	ansUpVote: async (req, res) => {
 		try {
 			const { ansId } = req.body;
-			const userId = req.userInfo.id;
+			const userId = req.user.id;
 
 			if (!ansId) {
 				return invalidFieldResponse(res, "provide all fields");
@@ -161,13 +163,14 @@ const controllers = {
 			return successResponse(res, upvote, "Answer upvoted successfully");
 		} catch (error) {
 			console.error(error.message);
+			return error;
 		}
 	},
 
 	answerDownVote: async (req, res) => {
 		try {
 			const { ansId } = req.body;
-			const userId = req.userInfo.id;
+			const userId = req.user.id;
 
 			if (!ansId) {
 				return invalidFieldResponse(res, "provide all fields");
@@ -212,6 +215,7 @@ const controllers = {
 			return successResponse(res, downvote, "Answer downvoted Successfully!");
 		} catch (error) {
 			console.error(error);
+			return error;
 		}
 	},
 };

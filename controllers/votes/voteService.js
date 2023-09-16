@@ -6,6 +6,7 @@ module.exports = {
 			return await VoteModel.create(object);
 		} catch (error) {
 			console.error(error.message);
+			return error;
 		}
 	},
 
@@ -16,6 +17,7 @@ module.exports = {
 			});
 		} catch (error) {
 			console.error(error.message);
+			return error;
 		}
 	},
 
@@ -24,6 +26,7 @@ module.exports = {
 			return await VoteModel.findOne(object);
 		} catch (error) {
 			console.error(error.message);
+			return error;
 		}
 	},
 };

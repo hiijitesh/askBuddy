@@ -14,11 +14,7 @@ module.exports = {
 			data: err,
 		});
 	},
-	forbiddenResponse: (
-		res,
-		err,
-		message = "You don't have access to this resource"
-	) => {
+	forbiddenResponse: (res, err, message = "Unauthorized Access") => {
 		console.error(err);
 		return res.status(403).json({
 			success: false,
@@ -26,7 +22,7 @@ module.exports = {
 			data: err,
 		});
 	},
-	invalidFieldResponse: (res, err, message = "field cannot be empty") => {
+	invalidFieldResponse: (res, err, message = "Empty fields") => {
 		console.error(err);
 		return res.status(400).json({
 			success: false,

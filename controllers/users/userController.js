@@ -23,7 +23,6 @@ const userController = {
 				return errorResponse(res, "password is not valid!");
 			}
 
-			// TODO add Encryption
 			const hashedPassword = await bcrypt.hash(password, 10);
 			const userData = { name, email, username, password: hashedPassword };
 
@@ -31,7 +30,7 @@ const userController = {
 			if (existingUser) {
 				return errorResponse(
 					res,
-					username,
+					{ username },
 					"user already register, please login!"
 				);
 			}
@@ -40,17 +39,18 @@ const userController = {
 			if (!userRegistrationData) {
 				return errorResponse(
 					res,
-					username,
+					{ username },
 					"couldn't create user, username and email should be unique!"
 				);
 			}
 			return successResponse(
 				res,
-				userRegistrationData,
+				{ userRegistrationData },
 				"user created successfully"
 			);
 		} catch (error) {
 			console.error(error);
+			return error;
 		}
 	},
 
@@ -59,17 +59,21 @@ const userController = {
 			const { username, password } = req.body;
 
 			if (!username || !password) {
-				return invalidFieldResponse(res, "username and password are mandatory");
+				return invalidFieldResponse(
+					res,
+					{},
+					"username and password are mandatory"
+				);
 			}
 
 			const user = await getUserById({ username });
 			if (!user) {
-				return errorResponse(res, username, "No user founds");
+				return errorResponse(res, { username }, "No user founds");
 			}
 
 			const matchPassword = await bcrypt.compare(password, user.password);
 			if (!matchPassword) {
-				return errorResponse(res, "wrong password");
+				return errorResponse(res, {}, "wrong password");
 			}
 
 			const access_token = generateToken(user, "access");
@@ -78,6 +82,7 @@ const userController = {
 			return successResponse(res, { access_token }, "User Login successfully");
 		} catch (error) {
 			console.error(error);
+			return error;
 		}
 	},
 };

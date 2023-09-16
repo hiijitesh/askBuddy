@@ -21,7 +21,7 @@ const controllers = {
 	addAnswer: async (req, res) => {
 		try {
 			const { questionId, description } = req.body;
-			const userId = req.userInfo.id;
+			const userId = req.user.id;
 
 			if (!description) {
 				return invalidFieldResponse(res, "please provide answer description!");
@@ -51,12 +51,13 @@ const controllers = {
 			return successResponse(res, answer, "You answer posted");
 		} catch (error) {
 			console.error(error.message);
+			return error;
 		}
 	},
 
 	getAnswer: async (req, res) => {
 		try {
-			const { ansId } = req.params;
+			const ansId = req.params;
 			const answer = await getAnswerById(ansId);
 			if (!answer) {
 				return errorResponse(res, {}, "answer doesn't exits");
@@ -65,6 +66,7 @@ const controllers = {
 			return successResponse(res, answer, "answer found");
 		} catch (error) {
 			console.error(error.message);
+			return error;
 		}
 	},
 
@@ -73,7 +75,7 @@ const controllers = {
 			const { questionId } = req.body;
 
 			if (!questionId) {
-				return invalidFieldResponse(res, "no question Id found");
+				return invalidFieldResponse(res, {}, "no question Id found");
 			}
 
 			const filter = {};
@@ -82,19 +84,20 @@ const controllers = {
 
 			const totalAnswer = await getTotalAnswer(filter);
 			if (!totalAnswer) {
-				return errorResponse(res, "answer doesn't exits");
+				return errorResponse(res, {}, "answer doesn't exits");
 			}
 
-			return successResponse(res, totalAnswer, "ans found");
+			return successResponse(res, { totalAnswer }, "ans found");
 		} catch (error) {
 			console.error(error.message);
+			return error;
 		}
 	},
 
 	editAnswer: async (req, res) => {
 		try {
 			const { ansId, description } = req.body;
-			const userId = req.userInfo.id;
+			const userId = req.user.id;
 
 			if (!ansId) {
 				return invalidFieldResponse(res, "please provide answerId");
@@ -103,7 +106,7 @@ const controllers = {
 				return invalidFieldResponse(res, "please provide answer description");
 			}
 
-			const answer = await getAnswerById({ _id: ansId });
+			const answer = await getAnswerById(ansId);
 			if (answer.answeredBy.toString() !== userId.toString()) {
 				return forbiddenResponse(
 					res,
@@ -114,59 +117,65 @@ const controllers = {
 			const updateData = {
 				description,
 			};
-			const ans = await updateAnswer(
-				{ _id: new mongoose.Types.ObjectId(ansId) },
-				updateData
-			);
-			if (!updateAnswer) {
+			const ans = await updateAnswer(ansId, updateData);
+			if (!ans) {
 				return errorResponse(res, "couldn't update answer");
 			}
 
 			return successResponse(res, ans, "answer updated successfully");
 		} catch (error) {
 			console.error(error.message);
+			return error;
 		}
 	},
 
 	removeAnswer: async (req, res) => {
 		try {
 			const { ansId } = req.body;
-			const userId = req.userInfo.id;
+			const userId = req.user.id;
 
 			if (!ansId) {
 				return invalidFieldResponse(res, "please provide answerId");
 			}
-
 			const answer = await getAnswerById(ansId);
+			if (!answer) {
+				return errorResponse(res, {}, "Answer doesn't exists");
+			}
 			if (answer.answeredBy.toString() !== userId.toString()) {
 				return forbiddenResponse(
 					res,
 					"you are not authorized to delete this answer"
 				);
 			}
+
 			const deletedAnsData = await deleteAnswer(ansId);
 			if (!deletedAnsData) {
-				return errorResponse(res, {}, "couldn't delete answer");
+				return errorResponse(
+					res,
+					{},
+					"Unable to delete answer right now, please try again"
+				);
 			}
 
 			return successResponse(
 				res,
 				deletedAnsData,
-				"Answer deleted successfully"
+				"Answer was deleted successfully"
 			);
 		} catch (error) {
 			console.error(error.message);
+			return error;
 		}
 	},
 
 	markAnswerAccepted: async (req, res) => {
 		try {
 			const { ansId } = req.body;
-			const userId = req.userInfo.id;
+			const userId = req.user.id;
 
 			const answer = await getAnswerById(ansId);
 			if (!answer) {
-				return errorResponse(res, "No such Answer exists!");
+				return errorResponse(res, {}, "No such Answer exists!");
 			}
 
 			if (answer.isAccepted) {
@@ -177,13 +186,13 @@ const controllers = {
 			if (userId.toString() !== question.askedBy.toString()) {
 				return forbiddenResponse(
 					res,
-					"your are not authorized to mark this ans accepted"
+					"your are not authorized to mark this answer as accepted"
 				);
 			}
 
 			const markAccepted = await updateAnswer(ansId, { isAccepted: true });
 			if (!markAccepted) {
-				return errorResponse(res, answer, "couldn't mark accepted");
+				return errorResponse(res, answer, "couldn't mark answer accepted");
 			}
 
 			const markQuestionAsAnswered = await updateQuestion(question._id, {
@@ -200,6 +209,7 @@ const controllers = {
 			return successResponse(res, markAccepted, "answer accepted!");
 		} catch (error) {
 			console.error(error.message);
+			return error;
 		}
 	},
 };
