@@ -6,8 +6,8 @@ router.post("/ans", answerController.addAnswer);
 router.put("/edit", answerController.editAnswer);
 router.delete("/remove", answerController.removeAnswer);
 router.get("/all", answerController.AllAnswer);
+router.post("/accept", answerController.markAnswerAccepted);
 
-// TODO accept ans
 router.get("/:id", answerController.getAnswer);
 
 module.exports = router;

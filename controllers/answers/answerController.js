@@ -155,6 +155,35 @@ const controllers = {
 			console.error(error.message);
 		}
 	},
+
+	markAnswerAccepted: async (req, res) => {
+		try {
+			const { ansId } = req.body;
+			const userId = req.userInfo.id;
+
+			const answer = await getAnswerById(ansId);
+			if (!answer) {
+				return errorResponse(res, "No such Answer exists!");
+			}
+
+			const question = await getQuestionById(answer.questionId);
+			if (userId.toString() !== question.askedBy.toString()) {
+				return forbiddenResponse(
+					res,
+					"your are not authorized to mark this ans accepted"
+				);
+			}
+
+			const markAccepted = await updateAnswer(ansId, { isAccepted: true });
+			if (!markAccepted) {
+				return errorResponse(res, answer, "couldn't mark accepted");
+			}
+
+			return successResponse(res, markAccepted, "answer accepted!");
+		} catch (error) {
+			console.error(error.message);
+		}
+	},
 };
 
 module.exports = controllers;

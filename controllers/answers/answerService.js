@@ -12,6 +12,8 @@ module.exports = {
 
 	getAnswerById: async (ansId) => {
 		try {
+			console.log(ansId);
+
 			return await AnsModel.findOne({ _id: ansId });
 		} catch (error) {
 			console.error(error.message);
@@ -20,7 +22,6 @@ module.exports = {
 
 	getTotalAnswer: async (questionFilter) => {
 		try {
-			console.log(questionFilter);
 			return await AnsModel.find(questionFilter).lean().exec();
 		} catch (error) {
 			console.error(error.message);
@@ -28,7 +29,9 @@ module.exports = {
 	},
 	updateAnswer: async (ansId, updateData) => {
 		try {
-			return await AnsModel.findOneAndUpdate(ansId, updateData, { new: true });
+			return await AnsModel.findOneAndUpdate({ _id: ansId }, updateData, {
+				new: true,
+			});
 		} catch (error) {
 			console.error(error.message);
 		}
