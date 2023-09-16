@@ -17,5 +17,5 @@ app.use("/user", userRouter);
 app.use(isAuthenticated, route);
 
 app.listen(PORT, () => {
-	console.log(`Server is listening on the port ${PORT} ✅✅✅`);
+  console.log(`Server is listening on the port ${PORT} ✅✅✅`);
 });

@@ -3,7 +3,7 @@ const QuestionModel = require("./question");
 const AnsModel = require("./answer");
 
 module.exports = {
-	UserModel,
-	QuestionModel,
-	AnsModel,
+  UserModel,
+  QuestionModel,
+  AnsModel,
 };
