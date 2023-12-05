@@ -2,23 +2,11 @@ const { default: mongoose } = require("mongoose");
 
 const voteSchema = new mongoose.Schema(
     {
-        isUpvote: {
+        upvote: {
             type: Boolean,
             default: false,
         },
-        isDownvote: {
-            type: Boolean,
-            default: false,
-        },
-        isQuestion: {
-            type: Boolean,
-            default: false,
-        },
-        isAnswer: {
-            type: Boolean,
-            default: false,
-        },
-        votedBy: {
+        voterId: {
             type: mongoose.Types.ObjectId,
             ref: "User",
         },
