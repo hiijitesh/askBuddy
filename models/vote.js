@@ -18,7 +18,7 @@ const voteSchema = new mongoose.Schema(
             type: Boolean,
             default: false,
         },
-        voteUserId: {
+        votedBy: {
             type: mongoose.Types.ObjectId,
             ref: "User",
         },

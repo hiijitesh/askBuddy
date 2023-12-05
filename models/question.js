@@ -20,7 +20,7 @@ const questionSchema = new mongoose.Schema(
             require: true,
             ref: "User",
         },
-        upvoteCount: {
+        voteCount: {
             type: Number,
             default: 0,
         },

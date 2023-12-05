@@ -14,7 +14,7 @@ const answerSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
         },
-        upvoteCount: {
+        voteCount: {
             type: Number,
             default: 0,
         },
