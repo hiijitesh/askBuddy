@@ -10,11 +10,19 @@ module.exports = {
         }
     },
 
-    updateVote: async (id, updateObject) => {
+    updateVote: async (updateObject, vote) => {
         try {
-            return await VoteModel.findOneAndUpdate(id, updateObject, {
-                new: true,
-            });
+            return await VoteModel.findOneAndUpdate(
+                updateObject,
+                {
+                    $set: {
+                        upvote: vote,
+                    },
+                },
+                {
+                    new: true,
+                }
+            );
         } catch (error) {
             console.error(error.message);
             return error;
