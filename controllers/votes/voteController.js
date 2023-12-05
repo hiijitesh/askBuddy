@@ -23,7 +23,7 @@ const controllers = {
             if (!question) {
                 return errorResponse(res, "Question doesn't exists");
             }
-
+            // console.log(question);
             if (userId.toString() === question.askedBy?.toString()) {
                 return errorResponse(
                     res,
@@ -31,18 +31,15 @@ const controllers = {
                     "You cannot vote own Question!"
                 );
             }
-            const oldVoteObj = {
-                voterId: userId,
-                questionId,
-            };
-
-            const oldVote = await getVoteData(oldVoteObj);
-            const vote = oldVote ? !oldVote.upvote : true;
-
             const voteObject = {
                 voterId: userId,
                 questionId,
             };
+
+            // console.log(oldVoteObj);
+
+            const oldVote = await getVoteData(voteObject);
+            const vote = oldVote ? !oldVote.upvote : true;
 
             const upvote = await updateVote(voteObject, vote);
 
@@ -63,6 +60,7 @@ const controllers = {
             }
 
             const answer = await getAnswerById(ansId);
+            // console.log(answer);
             if (!answer) {
                 return errorResponse(res, "answer doesn't exists");
             }
@@ -79,12 +77,8 @@ const controllers = {
                 answerId: ansId,
             };
 
-            const oldVoteObj = {
-                voterId: userId,
-                answerId: ansId,
-            };
-
-            const oldVote = await getVoteData(oldVoteObj);
+            const oldVote = await getVoteData(voteObject);
+            // console.log(oldVote);
             const vote = oldVote ? !oldVote.upvote : true;
 
             const upvote = await updateVote(voteObject, vote);
