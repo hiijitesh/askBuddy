@@ -41,9 +41,15 @@ const controllers = {
             const oldVote = await getVoteData(voteObject);
             const vote = oldVote ? !oldVote.upvote : true;
 
-            const upvote = await updateVote(voteObject, vote);
+            const voteData = await updateVote(voteObject, vote);
 
-            return successResponse(res, upvote, "Question voted successfully");
+            const voteType = voteData.upvote ? "downvoted" : "upvoted";
+
+            return successResponse(
+                res,
+                voteData,
+                `Question ${voteType} successfully`
+            );
         } catch (error) {
             console.error(error.message);
             return errorResponse(res, {}, "You cannot vote Question");
@@ -81,8 +87,13 @@ const controllers = {
             // console.log(oldVote);
             const vote = oldVote ? !oldVote.upvote : true;
 
-            const upvote = await updateVote(voteObject, vote);
-            return successResponse(res, upvote, "Answer voted successfully");
+            const voteData = await updateVote(voteObject, vote);
+            const voteType = voteData.upvote ? "downvoted" : "upvoted";
+            return successResponse(
+                res,
+                voteData,
+                `Answer ${voteType} successfully`
+            );
         } catch (error) {
             console.error(error.message);
             return errorResponse(res, {}, "You cannot upvote Answer");
