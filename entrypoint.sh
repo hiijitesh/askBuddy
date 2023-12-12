@@ -11,5 +11,5 @@ docker push hiijitesh/stackoverflow-clone:$date
 echo "Docker Push complete"
 echo "Deploying the container"
 echo "start docker-compose"
-docker-compose down && docker-compose up -d
+# docker-compose down && docker-compose up -d
 echo "Deployment finished"

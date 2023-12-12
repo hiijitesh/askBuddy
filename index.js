@@ -10,6 +10,9 @@ const route = require("./routes");
 const { isAuthenticated } = require("./utils/auth");
 
 const app = express();
+app.use("/", (req, res) => {
+    res.send("<h1> ASK ME</h1>");
+});
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
