@@ -1,4 +1,4 @@
-name: CI/CD Pipeline for stackoverflow-clone
+name: dockerhub push stackOverflow-clone
 
 on:
     push:
@@ -47,5 +47,5 @@ jobs:
                   docker push ${{ secrets.DOCKERHUB_USERNAME }}/stackoverflow-clone:$date
                   echo "Docker Push complete"
                   echo "Deploying the container"
-                  docker-compose down && docker-compose up -d
+                  # docker-compose down && docker-compose up -d
                   echo "Deployment finished"

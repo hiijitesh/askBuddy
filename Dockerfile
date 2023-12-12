@@ -13,9 +13,6 @@ USER node
 # don't install dev depedencies
 RUN npm install --omit=dev
 
-# create static configuration for app
-# RUN echo "variableData=Dockerfile-Build" >> .env
-
 # copy in source code
 COPY --chown=node:node ./ ./
 
