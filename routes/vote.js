@@ -2,10 +2,7 @@ const router = require("express").Router();
 
 const { voteController } = require("../controllers");
 
-router.post("/question/upvote", voteController.questionUpvote);
-router.post("/question/downvote", voteController.questionDownVote);
-
-router.post("/answer/upvote", voteController.ansUpVote);
-router.post("/answer/downvote", voteController.answerDownVote);
+router.post("/question/vote", voteController.questionVote);
+router.post("/answer/vote", voteController.answerVote);
 
 module.exports = router;

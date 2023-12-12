@@ -1,9 +1,8 @@
-# how to run
+# stackoverflow-clone
 
-clone this repo
-`https://github.com/hiijitesh/stackoverflow-clone/`
+StackOverflow backend clone using nodejs
 
-run `npm i`
-Add mongoDB URI and Access_Token data in `.env` file
+• Designed and built a robust backend system using Node.js and MongoDB, mirroring Stack Overflow’s functionality,
+ensuring efficient data handling and retrieval.
 
-`npm run dev`
+• Orchestrated Docker deployment and established a streamlined CI/CD pipeline & code-format with GitHub Actions

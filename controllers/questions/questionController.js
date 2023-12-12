@@ -1,129 +1,190 @@
 const {
-	invalidFieldResponse,
-	errorResponse,
-	successResponse,
-	forbiddenResponse,
+    invalidFieldResponse,
+    errorResponse,
+    successResponse,
+    forbiddenResponse,
 } = require("../../utils/errorHandler");
 
 const {
-	createQuestion,
-	updateQuestion,
-	deleteQuestion,
-	getQuestionById,
+    createQuestion,
+    updateQuestion,
+    deleteQuestion,
+    getQuestionById,
+    getAllQuestions,
 } = require("./questionService");
-const { getUserById } = require("../users/userService");
-const { default: mongoose } = require("mongoose");
 
 const controllers = {
-	addQuestion: async (req, res) => {
-		try {
-			const { title, body, tags } = req.body;
-			const askedBy = req.userInfo.id;
+    addQuestion: async (req, res) => {
+        try {
+            const { title, body, tags } = req.body;
+            const askedBy = req.user.id;
+            if (!askedBy) {
+                return invalidFieldResponse(res, {}, "Not valid user");
+            }
 
-			if (!title || !body || !tags?.length < 0 || !askedBy) {
-				return invalidFieldResponse(res, "all filed are mandatory");
-			}
-			const questionData = {
-				title,
-				body,
-				tags,
-				askedBy,
-			};
-			const question = await createQuestion(questionData);
+            if (!title || !body || !tags?.length < 0) {
+                return invalidFieldResponse(res, {}, "all filed are mandatory");
+            }
+            const questionData = {
+                title,
+                body,
+                askedBy,
+                tags,
+            };
 
-			if (!question) {
-				return errorResponse(res, "couldn't add question please try again!");
-			}
+            const question = await createQuestion(questionData);
+            if (!question) {
+                return errorResponse(
+                    res,
+                    {},
+                    "couldn't add question please try again!"
+                );
+            }
+            return successResponse(
+                res,
+                { question },
+                "Your Question was added"
+            );
+        } catch (error) {
+            console.error(error.message);
+            return error;
+        }
+    },
 
-			return successResponse(res, question, "Your Question was added");
-		} catch (error) {
-			console.error(error.message);
-		}
-	},
+    getQuestion: async (req, res) => {
+        try {
+            const questionId = req.params;
+            if (!questionId) {
+                return invalidFieldResponse(res, "provide questionId");
+            }
 
-	getQuestion: async (req, res) => {
-		try {
-			const { questionId } = req.params;
+            const question = await getQuestionById(questionId);
+            if (!question) {
+                return errorResponse(
+                    res,
+                    {},
+                    "Question you are looking for doesn't exits!"
+                );
+            }
 
-			const question = await getQuestionById(questionId);
-			if (!question) {
-				return errorResponse(
-					res,
-					{},
-					"Question you are looking for doesn't exits!"
-				);
-			}
+            return successResponse(res, question, "Question founds");
+        } catch (error) {
+            console.error(error.message);
+            return error;
+        }
+    },
 
-			return successResponse(res, question, "Question founds");
-		} catch (error) {
-			console.error(error.message);
-		}
-	},
+    editQuestion: async (req, res) => {
+        try {
+            const { questionId, title, body, tags } = req.body;
+            const userId = req.user.id;
 
-	editQuestion: async (req, res) => {
-		try {
-			const { questionId, title, body, tags } = req.body;
-			const userId = req.userInfo.id;
+            if (!questionId) {
+                return invalidFieldResponse(
+                    res,
+                    {},
+                    "please provide questionId!"
+                );
+            }
 
-			if (!questionId) {
-				return invalidFieldResponse(res, "please provide questionId!");
-			}
+            const questionInfo = await getQuestionById(questionId);
+            if (!questionInfo) {
+                return errorResponse(res, "Question Doesn't exits!");
+            }
+            if (userId.toString() !== questionInfo.askedBy.toString()) {
+                return forbiddenResponse(
+                    res,
+                    questionInfo.title,
+                    "you are not authorized to edit this question"
+                );
+            }
 
-			const user = await getUserById(new mongoose.Types.ObjectId(userId));
-			// console.log(user);
+            const questionData = {
+                title,
+                body,
+                tags,
+            };
 
-			if (userId.toString() !== user._id.toString()) {
-				return forbiddenResponse(
-					res,
-					"you are not authorized to edit this question"
-				);
-			}
+            const question = await updateQuestion(questionId, questionData);
+            if (!question) {
+                return errorResponse(res, {}, "couldn't update question");
+            }
 
-			const questionData = {
-				title,
-				body,
-				tags,
-			};
+            return successResponse(
+                res,
+                question,
+                "question updated successfully!"
+            );
+        } catch (error) {
+            console.error(error.message);
+            return error;
+        }
+    },
 
-			const question = await updateQuestion(questionId, questionData);
+    removeQuestion: async (req, res) => {
+        try {
+            const { questionId } = req.body;
+            const userId = req.user.id;
 
-			if (!question) {
-				return errorResponse(res, {}, "couldn't update question");
-			}
+            const questionInfo = await getQuestionById(questionId);
+            if (!questionInfo) {
+                return errorResponse(res, "Question Doesn't exits!");
+            }
+            if (userId.toString() !== questionInfo.askedBy.toString()) {
+                return forbiddenResponse(
+                    res,
+                    questionInfo.title,
+                    "you are not authorized to delete this question"
+                );
+            }
 
-			return successResponse(res, question, "question updated successfully!");
-		} catch (error) {
-			console.error(error.message);
-		}
-	},
-	removeQuestion: async (req, res) => {
-		try {
-			const { questionId } = req.body;
-			const userId = req.userInfo.id;
+            const removedQuestion = await deleteQuestion(questionId);
+            if (!removedQuestion) {
+                return errorResponse(
+                    res,
+                    {},
+                    "something went wrong, pleas try again!"
+                );
+            }
 
-			const user = await getUserById(new mongoose.Types.ObjectId(userId));
-			if (userId.toString() !== user._id.toString()) {
-				return forbiddenResponse(
-					res,
-					"you are not authorized to delete this question"
-				);
-			}
+            return successResponse(
+                res,
+                removedQuestion,
+                "Your question was deleted!"
+            );
+        } catch (error) {
+            console.error(error.message);
+            return error;
+        }
+    },
 
-			const removedQuestion = await deleteQuestion(questionId);
+    allQuestions: async (req, res) => {
+        try {
+            const userId = req.user.id;
 
-			if (!deleteQuestion) {
-				return errorResponse(res, {}, "something went wrong, pleas try again!");
-			}
+            if (!userId) {
+                return invalidFieldResponse(
+                    res,
+                    {},
+                    "Please use token so that We can get your user id"
+                );
+            }
 
-			return successResponse(
-				res,
-				removedQuestion,
-				"Your question was removed!"
-			);
-		} catch (error) {
-			console.error(error.message);
-		}
-	},
+            const questions = await getAllQuestions({ askedBy: userId });
+            if (!questions) {
+                return errorResponse(res, {}, "questions  doesn't exists");
+            }
+
+            return successResponse(
+                res,
+                questions,
+                "All questions found successfully"
+            );
+        } catch (error) {
+            console.error(error);
+            return error;
+        }
+    },
 };
 
 module.exports = controllers;
