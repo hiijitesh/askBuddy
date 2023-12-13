@@ -19,7 +19,7 @@ module.exports = {
                 message: "Unauthorized",
             });
         }
-        req.user = decoded;
+        req.user.id = decoded;
         next();
     },
 
