@@ -171,7 +171,6 @@ const controllers = {
             }
 
             const questions = await getAllQuestions({ askedBy: userId });
-            console.log(questions);
             if (!questions) {
                 return errorResponse(res, {}, "questions  doesn't exists");
             }
