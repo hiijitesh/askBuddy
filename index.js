@@ -7,14 +7,14 @@ dbConnection();
 
 const userRouter = require("./routes/user");
 const route = require("./routes");
-const { isAuthenticated } = require("./utils/auth");
+// const { isAuthenticated } = require("./utils/auth");
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/user", userRouter);
-app.use(isAuthenticated, route);
+app.use(route);
 
 app.use("/", (req, res) => {
     res.send("<h1> ASK ME</h1>");
