@@ -60,8 +60,8 @@ const controllers = {
 
             return successResponse(res, answer, "You answer posted");
         } catch (error) {
-            console.error(error.message);
-            return error;
+            console.error(error);
+            return errorResponse(res, {}, "something went wrong!");
         }
     },
 
@@ -75,8 +75,8 @@ const controllers = {
 
             return successResponse(res, answer, "answer found");
         } catch (error) {
-            console.error(error.message);
-            return error;
+            console.error(error);
+            return errorResponse(res, {}, "something went wrong!");
         }
     },
 
@@ -99,8 +99,8 @@ const controllers = {
 
             return successResponse(res, { totalAnswer }, "ans found");
         } catch (error) {
-            console.error(error.message);
-            return error;
+            console.error(error);
+            return errorResponse(res, {}, "something went wrong!");
         }
     },
 
@@ -137,8 +137,8 @@ const controllers = {
 
             return successResponse(res, ans, "answer updated successfully");
         } catch (error) {
-            console.error(error.message);
-            return error;
+            console.error(error);
+            return errorResponse(res, {}, "something went wrong!");
         }
     },
 
@@ -176,8 +176,8 @@ const controllers = {
                 "Answer was deleted successfully"
             );
         } catch (error) {
-            console.error(error.message);
-            return error;
+            console.error(error);
+            return errorResponse(res, {}, "something went wrong!");
         }
     },
 
@@ -227,8 +227,8 @@ const controllers = {
             }
             return successResponse(res, markAccepted, "answer accepted!");
         } catch (error) {
-            console.error(error.message);
-            return error;
+            console.error(error);
+            return errorResponse(res, {}, "something went wrong!");
         }
     },
 };

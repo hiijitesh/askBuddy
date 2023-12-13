@@ -46,8 +46,8 @@ const controllers = {
                 "Your Question was added"
             );
         } catch (error) {
-            console.error(error.message);
-            return error;
+            console.error(error);
+            return errorResponse(res, {}, "something went wrong!");
         }
     },
 
@@ -69,8 +69,8 @@ const controllers = {
 
             return successResponse(res, question, "Question founds");
         } catch (error) {
-            console.error(error.message);
-            return error;
+            console.error(error);
+            return errorResponse(res, {}, "something went wrong!");
         }
     },
 
@@ -107,7 +107,7 @@ const controllers = {
 
             const question = await updateQuestion(questionId, questionData);
             if (!question) {
-                return errorResponse(res, {}, "couldn't update question");
+                return errorResponse(res, {}, "something went wrong!");
             }
 
             return successResponse(
@@ -116,8 +116,8 @@ const controllers = {
                 "question updated successfully!"
             );
         } catch (error) {
-            console.error(error.message);
-            return error;
+            console.error(error);
+            return errorResponse(res, {}, "something went wrong!");
         }
     },
 
@@ -153,8 +153,8 @@ const controllers = {
                 "Your question was deleted!"
             );
         } catch (error) {
-            console.error(error.message);
-            return error;
+            console.error(error);
+            return errorResponse(res, {}, "something went wrong!");
         }
     },
 
@@ -182,7 +182,7 @@ const controllers = {
             );
         } catch (error) {
             console.error(error);
-            return error;
+            return errorResponse(res, {}, "something went wrong!");
         }
     },
 };

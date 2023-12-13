@@ -5,7 +5,7 @@ const { questionController } = require("../controllers");
 router.post("/ask", questionController.addQuestion);
 router.put("/edit", questionController.editQuestion);
 router.delete("/remove", questionController.removeQuestion);
-router.get("/getall", questionController.allQuestions);
+router.post("/getall", questionController.allQuestions);
 
 router.get("/:id", questionController.getQuestion);
 

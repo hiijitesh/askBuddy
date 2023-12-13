@@ -51,7 +51,7 @@ const controllers = {
                 `Question ${voteType} successfully`
             );
         } catch (error) {
-            console.error(error.message);
+            console.error(error);
             return errorResponse(res, {}, "You cannot vote Question");
         }
     },
@@ -95,7 +95,7 @@ const controllers = {
                 `Answer ${voteType} successfully`
             );
         } catch (error) {
-            console.error(error.message);
+            console.error(error);
             return errorResponse(res, {}, "You cannot upvote Answer");
         }
     },

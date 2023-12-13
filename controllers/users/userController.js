@@ -55,7 +55,7 @@ const userController = {
             );
         } catch (error) {
             console.error(error);
-            return error;
+            return errorResponse(res, {}, "something went wrong!");
         }
     },
 
@@ -91,7 +91,7 @@ const userController = {
             );
         } catch (error) {
             console.error(error);
-            return error;
+            return errorResponse(res, {}, "something went wrong!");
         }
     },
 };
