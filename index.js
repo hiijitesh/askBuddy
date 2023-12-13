@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/user", userRouter);
-app.use("/ask", route);
+app.use("/api", route);
 
 app.get("/", (req, res) => {
     res.send("<h1> ASK ME</h1>");
