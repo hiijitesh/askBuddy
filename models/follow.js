@@ -6,6 +6,10 @@ const followSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "Questions",
         },
+        answerId: {
+            type: mongoose.Types.ObjectId,
+            ref: "Answer",
+        },
         followerId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
