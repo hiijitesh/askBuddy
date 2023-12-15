@@ -14,6 +14,10 @@ const commentSchema = new mongoose.Schema(
             type: mongoose.Types.ObjectId,
             ref: "Answer",
         },
+        username: {
+            type: String,
+            require: true,
+        },
         commenterId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
@@ -21,7 +25,11 @@ const commentSchema = new mongoose.Schema(
         // for reply on comment
         commentId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
+            ref: "Comment",
+        },
+        voteCount: {
+            type: Number,
+            default: 0,
         },
     },
     {
@@ -29,5 +37,5 @@ const commentSchema = new mongoose.Schema(
     }
 );
 
-const commentModel = mongoose.model("comment", commentSchema);
-module.exports = commentModel;
+const CommentModel = mongoose.model("Comment", commentSchema);
+module.exports = CommentModel;

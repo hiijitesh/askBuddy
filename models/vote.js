@@ -18,6 +18,10 @@ const voteSchema = new mongoose.Schema(
             type: mongoose.Types.ObjectId,
             ref: "Answer",
         },
+        commentId: {
+            type: mongoose.Types.ObjectId,
+            ref: "Comment",
+        },
     },
     {
         timestamps: true,
