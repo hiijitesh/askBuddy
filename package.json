@@ -9,7 +9,7 @@
         "dev": "nodemon index.js",
         "lint": "eslint --ignore-path .eslintignore --ext .js,.ts .",
         "lint-and-fix": "eslint . --ext .js --fix",
-        "format": "prettier --write ."
+        "format": "prettier --write --list-different ."
     },
     "keywords": [
         "node"
