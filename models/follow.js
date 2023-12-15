@@ -18,6 +18,11 @@ const followSchema = new mongoose.Schema(
             type: Number,
             default: 0,
         },
+        isFollow: {
+            type: Boolean,
+            require: true,
+            default: false,
+        },
     },
     {
         timestamps: true,
