@@ -32,11 +32,10 @@ const controllers = {
                 answerId,
             });
 
-            console.log(isFollowing);
+            const isFollow = !isFollowing;
 
             const followObj = {
                 followerId: userId,
-                isFollow: !isFollowing,
             };
 
             if (questionId) {
@@ -47,7 +46,7 @@ const controllers = {
                 followObj.answerId = answerId;
             }
 
-            const followData = await followService(followObj);
+            const followData = await followService(followObj, isFollow);
 
             return followData
                 ? successResponse(res, followData, "followed successfully")

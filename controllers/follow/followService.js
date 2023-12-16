@@ -16,23 +16,16 @@ module.exports = {
         }
     },
 
-    followService: async (obj) => {
+    followService: async (obj, isFollow) => {
         try {
-            const { followerId, questionId, answerId } = obj;
             const data = await FollowModel.findOneAndUpdate(
-                { followerId },
-                { $set: obj },
+                obj,
+                { $set: { isFollow } },
                 {
                     upsert: true,
                     new: true,
                 }
-            )
-                .select({
-                    isFollow: 1,
-                })
-                .lean();
-
-            console.log(data);
+            ).lean();
             return data;
         } catch (error) {
             console.error(error);
