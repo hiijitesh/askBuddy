@@ -8,15 +8,15 @@ const {
 
 const {
     createQuestion,
-    updateQuestion,
-    deleteQuestion,
+    editQuestion,
     getQuestionById,
     getAllQuestions,
     AllQuestions,
+    removeQuestion,
 } = require("./questionService");
 
 const controllers = {
-    addQuestion: async (req, res) => {
+    askQuestion: async (req, res) => {
         try {
             const { title, body, tags } = req.body;
             const askedBy = req.user.id;
@@ -76,7 +76,7 @@ const controllers = {
         }
     },
 
-    editQuestion: async (req, res) => {
+    updateQuestion: async (req, res) => {
         try {
             const { questionId, title, body, tags } = req.body;
             const userId = req.user.id;
@@ -107,7 +107,7 @@ const controllers = {
                 tags,
             };
 
-            const question = await updateQuestion(questionId, questionData);
+            const question = await editQuestion(questionId, questionData);
             if (!question) {
                 return errorResponse(res, {}, "something went wrong!");
             }
@@ -123,7 +123,7 @@ const controllers = {
         }
     },
 
-    removeQuestion: async (req, res) => {
+    deleteQuestion: async (req, res) => {
         try {
             const { questionId } = req.body;
             const userId = req.user.id;
@@ -140,7 +140,7 @@ const controllers = {
                 );
             }
 
-            const removedQuestion = await deleteQuestion(questionId);
+            const removedQuestion = await removeQuestion(questionId);
             if (!removedQuestion) {
                 return errorResponse(
                     res,

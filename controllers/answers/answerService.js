@@ -28,7 +28,7 @@ module.exports = {
             return error;
         }
     },
-    updateAnswer: async (ansId, updateData) => {
+    editAnswer: async (ansId, updateData) => {
         try {
             return await AnsModel.findByIdAndUpdate(
                 new mongoose.Types.ObjectId(ansId),
@@ -43,7 +43,7 @@ module.exports = {
         }
     },
 
-    deleteAnswer: async (ansId) => {
+    removeAnswer: async (ansId) => {
         try {
             return await AnsModel.findOneAndRemove(
                 new mongoose.Types.ObjectId(ansId)

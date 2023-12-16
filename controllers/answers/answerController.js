@@ -5,16 +5,19 @@ const {
     successResponse,
     forbiddenResponse,
 } = require("../../utils/errorHandler");
+
 const {
     getQuestionById,
-    updateQuestion,
+    editQuestion,
 } = require("../questions/questionService");
+
 const {
     answerToQuestion,
     getAnswerById,
-    updateAnswer,
-    deleteAnswer,
+
     getTotalAnswer,
+    removeAnswer,
+    editAnswer,
 } = require("./answerService");
 
 const controllers = {
@@ -65,7 +68,7 @@ const controllers = {
         }
     },
 
-    getAnswer: async (req, res) => {
+    getAnswerById: async (req, res) => {
         try {
             const ansId = req.params;
             const answer = await getAnswerById(ansId);
@@ -80,7 +83,7 @@ const controllers = {
         }
     },
 
-    allAnswer: async (req, res) => {
+    getAllAnswer: async (req, res) => {
         try {
             const { questionId } = req.body;
 
@@ -104,7 +107,7 @@ const controllers = {
         }
     },
 
-    editAnswer: async (req, res) => {
+    updateAnswer: async (req, res) => {
         try {
             const { ansId, description } = req.body;
             const userId = req.user.id;
@@ -130,7 +133,7 @@ const controllers = {
             const updateData = {
                 description,
             };
-            const ans = await updateAnswer(ansId, updateData);
+            const ans = await editAnswer(ansId, updateData);
             if (!ans) {
                 return errorResponse(res, "couldn't update answer");
             }
@@ -142,7 +145,7 @@ const controllers = {
         }
     },
 
-    removeAnswer: async (req, res) => {
+    deleteAnswer: async (req, res) => {
         try {
             const { ansId } = req.body;
             const userId = req.user.id;
@@ -161,7 +164,7 @@ const controllers = {
                 );
             }
 
-            const deletedAnsData = await deleteAnswer(ansId);
+            const deletedAnsData = await removeAnswer(ansId);
             if (!deletedAnsData) {
                 return errorResponse(
                     res,
@@ -203,7 +206,7 @@ const controllers = {
                 );
             }
 
-            const markAccepted = await updateAnswer(ansId, {
+            const markAccepted = await editAnswer(ansId, {
                 isAccepted: true,
             });
             if (!markAccepted) {
@@ -214,7 +217,7 @@ const controllers = {
                 );
             }
 
-            const markQuestionAsAnswered = await updateQuestion(question._id, {
+            const markQuestionAsAnswered = await editQuestion(question._id, {
                 isAnswered: true,
             });
 
