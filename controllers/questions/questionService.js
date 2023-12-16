@@ -56,4 +56,17 @@ module.exports = {
             return error;
         }
     },
+    AllQuestions: async (agg, options) => {
+        try {
+            const question = QuestionModel.aggregate(agg);
+            const data = await QuestionModel.aggregatePaginate(
+                question,
+                options
+            );
+            return data;
+        } catch (error) {
+            console.error(error.message);
+            return error;
+        }
+    },
 };

@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 
 const answerSchema = new mongoose.Schema(
     {
@@ -31,6 +32,8 @@ const answerSchema = new mongoose.Schema(
         timestamps: true,
     }
 );
+
+answerSchema.plugin(aggregatePaginate);
 
 const AnsModel = mongoose.model("Answer", answerSchema);
 module.exports = AnsModel;

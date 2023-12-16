@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const aggregatePaginate = require("mongoose-aggregate-paginate-v2");
 
 const questionSchema = new mongoose.Schema(
     {
@@ -37,6 +38,8 @@ const questionSchema = new mongoose.Schema(
         timestamps: true,
     }
 );
+
+questionSchema.plugin(aggregatePaginate);
 
 const QuestionModel = mongoose.model("Question", questionSchema);
 

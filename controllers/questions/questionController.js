@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose");
 const {
     invalidFieldResponse,
     errorResponse,
@@ -11,6 +12,7 @@ const {
     deleteQuestion,
     getQuestionById,
     getAllQuestions,
+    AllQuestions,
 } = require("./questionService");
 
 const controllers = {
@@ -51,7 +53,7 @@ const controllers = {
         }
     },
 
-    getQuestion: async (req, res) => {
+    getQuestionById: async (req, res) => {
         try {
             const questionId = req.params;
             if (!questionId) {
@@ -158,7 +160,7 @@ const controllers = {
         }
     },
 
-    allQuestions: async (req, res) => {
+    getUserQuestions: async (req, res) => {
         try {
             const userId = req.user.id;
 
@@ -171,6 +173,146 @@ const controllers = {
             }
 
             const questions = await getAllQuestions({ askedBy: userId });
+            if (!questions) {
+                return errorResponse(res, {}, "questions  doesn't exists");
+            }
+
+            return successResponse(
+                res,
+                questions,
+                "All questions found successfully"
+            );
+        } catch (error) {
+            console.error(error);
+            return errorResponse(res, {}, "something went wrong!");
+        }
+    },
+
+    getallQuestions: async (req, res) => {
+        try {
+            const { pageNum, pageSize, tags } = req.body;
+            const userId = req.user.id;
+
+            if (!userId) {
+                return invalidFieldResponse(
+                    res,
+                    {},
+                    "Please use token so that We can get your user id"
+                );
+            }
+            const questionAgg = [
+                {
+                    $match: {
+                        tags: { $in: tags },
+                    },
+                },
+
+                {
+                    $lookup: {
+                        from: "follows",
+                        let: { id: "$_id" },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $and: [
+                                            {
+                                                $eq: ["$questionId", "$$id"],
+                                            },
+                                            {
+                                                $eq: [
+                                                    "$followerId",
+                                                    new mongoose.Types.ObjectId(
+                                                        userId
+                                                    ),
+                                                ],
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                        ],
+                        as: "followData",
+                    },
+                },
+                {
+                    $addFields: {
+                        isFollowing: {
+                            $cond: {
+                                if: {
+                                    $eq: [
+                                        { $ifNull: ["$followData", "false"] },
+                                        "false",
+                                    ],
+                                },
+                                then: false,
+                                else: true,
+                            },
+                        },
+                    },
+                },
+
+                {
+                    $lookup: {
+                        from: "votes",
+                        let: { id: "$_id" },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: {
+                                        $and: [
+                                            {
+                                                $eq: ["$questionId", "$$id"],
+                                            },
+                                            {
+                                                $eq: [
+                                                    "$voterId",
+                                                    new mongoose.Types.ObjectId(
+                                                        userId
+                                                    ),
+                                                ],
+                                            },
+                                        ],
+                                    },
+                                    upvote: true,
+                                },
+                            },
+                        ],
+                        as: "voteData",
+                    },
+                },
+                {
+                    $addFields: {
+                        isVoted: {
+                            $cond: {
+                                if: {
+                                    $eq: [
+                                        { $ifNull: ["$voteData", "false"] },
+                                        "false",
+                                    ],
+                                },
+                                then: true,
+                                else: false,
+                            },
+                        },
+                    },
+                },
+
+                {
+                    $unset: ["voteData"],
+                },
+            ];
+
+            const options = {
+                page: pageNum || 1,
+                limit: pageSize || 10,
+                sort: { _id: -1 },
+                collation: {
+                    locale: "en",
+                },
+            };
+
+            const questions = await AllQuestions(questionAgg, options);
             if (!questions) {
                 return errorResponse(res, {}, "questions  doesn't exists");
             }
