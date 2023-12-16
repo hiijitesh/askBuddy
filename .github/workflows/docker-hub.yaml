@@ -1,4 +1,4 @@
-name: dockerhub push stackOverflow-clone
+name: dockerhub push
 
 on:
     push:
