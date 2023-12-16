@@ -11,8 +11,22 @@ module.exports = {
     },
     getUserById: async (userId) => {
         try {
-            return await UserModel.findOne(userId)
+            return await UserModel.findOne({ _id: userId })
                 .select("+password")
+                .lean()
+                .exec();
+        } catch (error) {
+            console.error(error.message);
+            return error;
+        }
+    },
+    updateUser: async (userId, obj) => {
+        try {
+            return await UserModel.findByIdAndUpdate(
+                userId,
+                { obj },
+                { new: true }
+            )
                 .lean()
                 .exec();
         } catch (error) {

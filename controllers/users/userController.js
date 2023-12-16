@@ -1,15 +1,17 @@
+const bcrypt = require("bcrypt");
 const {
     invalidFieldResponse,
     errorResponse,
     successResponse,
+    forbiddenResponse,
 } = require("../../utils/errorHandler");
+
 const { validateEmail, validatePassword } = require("../../utils/validator");
 const { generateToken } = require("../../utils/auth");
-const { registerUser, getUserById } = require("./userService");
-const bcrypt = require("bcrypt");
+const { registerUser, getUserById, updateUser } = require("./userService");
 
 const userController = {
-    signUp: async (req, res) => {
+    signup: async (req, res) => {
         try {
             const { name, email, username, password } = req.body;
             if (!name || !email || !username || !password) {
@@ -50,7 +52,7 @@ const userController = {
             }
             return successResponse(
                 res,
-                { userRegistrationData },
+                userRegistrationData,
                 "user created successfully"
             );
         } catch (error) {
@@ -89,6 +91,68 @@ const userController = {
                 { access_token },
                 "User Login successfully"
             );
+        } catch (error) {
+            console.error(error);
+            return errorResponse(res, {}, "something went wrong!");
+        }
+    },
+
+    updateUserProfile: async (req, res) => {
+        try {
+            const { username, email, name } = req.body;
+
+            const userId = req.user.id;
+
+            if (!username || !name || !email) {
+                return invalidFieldResponse(
+                    res,
+                    {},
+                    "username, email or name are mandatory"
+                );
+            }
+
+            const user = await getUserById({ username });
+            if (!user) {
+                return errorResponse(res, { username }, "No user founds");
+            }
+
+            if (user._id.toString() !== userId) {
+                return forbiddenResponse(res, {}, "your are not authorized  `");
+            }
+
+            const userObj = {
+                name,
+                email,
+                username,
+            };
+
+            const updateProfile = await updateUser(userId, userObj);
+
+            return successResponse(
+                res,
+                updateProfile,
+                "User Login successfully"
+            );
+        } catch (error) {
+            console.error(error);
+            return errorResponse(res, {}, "something went wrong!");
+        }
+    },
+
+    getUserById: async (req, res) => {
+        try {
+            const { id } = req.params;
+
+            if (!id) {
+                return invalidFieldResponse(res, {}, "userId is mandatory");
+            }
+
+            const user = await getUserById({ id });
+            if (!user) {
+                return errorResponse(res, { id }, "No user founds");
+            }
+
+            return successResponse(res, user, "User Login successfully");
         } catch (error) {
             console.error(error);
             return errorResponse(res, {}, "something went wrong!");
