@@ -14,10 +14,6 @@ const followSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
         },
-        followCount: {
-            type: Number,
-            default: 0,
-        },
         isFollow: {
             type: Boolean,
             require: true,

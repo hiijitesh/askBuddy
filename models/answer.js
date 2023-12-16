@@ -22,6 +22,10 @@ const answerSchema = new mongoose.Schema(
             type: Boolean,
             default: false,
         },
+        followCount: {
+            type: Number,
+            default: 0,
+        },
     },
     {
         timestamps: true,

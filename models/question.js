@@ -24,6 +24,10 @@ const questionSchema = new mongoose.Schema(
             type: Number,
             default: 0,
         },
+        followCount: {
+            type: Number,
+            default: 0,
+        },
         isAnswered: {
             type: Boolean,
             default: false,

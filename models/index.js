@@ -1,13 +1,7 @@
-const UserModel = require("./user");
-const QuestionModel = require("./question");
-const AnsModel = require("./answer");
-const CommentModel = require("./comment");
-const FollowModel = require("./follow");
-
 module.exports = {
-    UserModel,
-    QuestionModel,
-    AnsModel,
-    CommentModel,
-    FollowModel,
+    UserModel: require("./user"),
+    QuestionModel: require("./question"),
+    AnsModel: require("./answer"),
+    CommentModel: require("./comment"),
+    FollowModel: require("./follow"),
 };

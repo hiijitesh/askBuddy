@@ -2,7 +2,7 @@ const router = require("express").Router();
 
 router.use("*", (req, res, next) => {
     // eslint-disable-next-line no-console
-    console.log("===>", req.method, req.originalUrl);
+    console.log("==>", req.method, req.originalUrl);
     next();
 });
 router.use("/question", require("./question"));

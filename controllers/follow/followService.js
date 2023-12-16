@@ -1,4 +1,4 @@
-const FollowModel = require("../../models/follow");
+const { FollowModel, QuestionModel, AnsModel } = require("../../models");
 
 module.exports = {
     checkFollowing: async (obj) => {
@@ -26,6 +26,27 @@ module.exports = {
                     new: true,
                 }
             ).lean();
+
+            if (data && data.questionId) {
+                await QuestionModel.findOneAndUpdate(
+                    { _id: data?.questionId },
+                    {
+                        $inc: { followCount: data?.isFollow ? 1 : -1 },
+                    },
+                    { new: true }
+                );
+            }
+
+            if (data && data?.answerId) {
+                await AnsModel.findOneAndUpdate(
+                    { _id: data?.answerId },
+                    {
+                        $inc: { followCount: data?.isFollow ? 1 : -1 },
+                    },
+                    { new: true }
+                );
+            }
+
             return data;
         } catch (error) {
             console.error(error);
