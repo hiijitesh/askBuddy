@@ -4,10 +4,10 @@ echo "checkout to dev"
 git checkout dev
 echo "Version: " $date
 echo "Docker Build Started"
-docker build -t hiijitesh/stackoverflow-clone:$date .
+docker build -t hiijitesh/askBuddy:$date .
 echo "Docker Build complete"
 echo "Pushing image to Dockerhub"
-docker push hiijitesh/stackoverflow-clone:$date
+docker push hiijitesh/askBuddy:$date
 echo "Docker Push complete"
 echo "Deploying the container"
 echo "start docker-compose"

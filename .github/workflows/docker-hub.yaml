@@ -39,10 +39,10 @@ jobs:
                   git checkout main
                   echo "Version: " $date
                   echo "Docker Build Started"
-                  docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/stackoverflow-clone:$date .
+                  docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/askBuddy:$date .
                   echo "Docker Build complete"
                   echo "Pushing image to Dockerhub"
-                  docker push ${{ secrets.DOCKERHUB_USERNAME }}/stackoverflow-clone:$date
+                  docker push ${{ secrets.DOCKERHUB_USERNAME }}/askBuddy:$date
                   echo "Docker Push complete"
                   echo "Deploying the container"
                   # docker-compose down && docker-compose up -d
