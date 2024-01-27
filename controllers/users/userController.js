@@ -141,18 +141,22 @@ const userController = {
 
     getUserById: async (req, res) => {
         try {
-            const { id } = req.params;
+            const { userId, productId } = req.params;
 
-            if (!id) {
+            if (!userId) {
                 return invalidFieldResponse(res, {}, "userId is mandatory");
             }
 
-            const user = await getUserById({ id });
+            const user = await getUserById({ userId });
             if (!user) {
-                return errorResponse(res, { id }, "No user founds");
+                return errorResponse(res, { userId }, "No user founds");
             }
 
-            return successResponse(res, user, "User Login successfully");
+            return successResponse(
+                res,
+                user,
+                "User Details fetched successfully"
+            );
         } catch (error) {
             console.error(error);
             return errorResponse(res, {}, "something went wrong!");

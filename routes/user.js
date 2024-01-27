@@ -7,6 +7,6 @@ router.post("/register", userController.signup);
 router.post("/login", userController.login);
 
 router.put("/update", isAuthenticated, userController.updateUserProfile);
-router.post("/:id", isAuthenticated, userController.getUserById);
+router.post("/:userId", userController.getUserById);
 
 module.exports = router;
